@@ -1,5 +1,6 @@
 package org.example.userservice.controllers;
 
+import lombok.NonNull;
 import org.example.userservice.dtos.LoginRequestDTO;
 import org.example.userservice.dtos.LogoutRequestDTO;
 import org.example.userservice.dtos.SignupRequestDTO;
@@ -10,10 +11,7 @@ import org.example.userservice.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -41,6 +39,10 @@ public class UserController {
     public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO requestDTO){
         userService.logout(requestDTO.getToken());
         return ResponseEntity.ok().build();
+    }
+    @PostMapping("/validate/{token}")
+    public User validateToken(@PathVariable @NonNull String token){
+        return userService.validateToken(token);
     }
 
     public SignupResponseDTO mapUserToSignupResponseDTO(User user) {

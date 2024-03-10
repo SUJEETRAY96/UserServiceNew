@@ -65,4 +65,16 @@ public class UserService {
         token1.setDeleted(true);
         tokenRepo.save(token1);
     }
+
+    public User validateToken(String token) {
+        Optional<Token> tokenOptional = tokenRepo.findByValueAndDeletedEquals(token, false);
+        if(tokenOptional.isEmpty()){
+            throw new RuntimeException(("Token not found"));
+        }
+        Token token1 = tokenOptional.get();
+        if(token1.getExpiryDate().before((Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())))){
+            throw new RuntimeException("Token expired");
+        }
+        return token1.getUser();
+    }
 }
